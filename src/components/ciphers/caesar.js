@@ -23,11 +23,14 @@ export const caesarEncryption = (message, n) => {
 }
 
 export const caesarDecryption = (message, n) => {
+  let alphabet = "abcdefghijklmnopqrstuvwxyz";
+  let newAlphabet = shift(n, alphabet);
+
   let res = "";
   message = message.toLowerCase();
   for (let i = 0; i < message.length; i++){
-    let index = newalpha.indexOf(message[i]);
+    let index = newAlphabet.indexOf(message[i]);
     res += alphabet[index];
   }
-  return result;
+  return res;
 }

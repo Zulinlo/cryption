@@ -7,10 +7,15 @@ header {
   padding: 0 15px;
 
   .header__link {
+    cursor: pointer;
     height: 100%;
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
+
+    &:hover {
+      opacity: 0.8;
+    }
 
     h1 {
       font-weight: 500;

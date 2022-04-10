@@ -4,23 +4,33 @@ import './styles.scss';
 
 import Navbar from "./components/Navbar";
 import { caesarEncryption, caesarDecryption } from "./components/ciphers/caesar";
+import { affineEncryption, affineDecryption } from "./components/ciphers/affine";
+import { rot13Encryption, rot13Decryption } from "./components/ciphers/rot13";
+import { atbashEncryption, atbashDecryption } from "./components/ciphers/atbash";
+import { baconianEncryption, baconianDecryption } from "./components/ciphers/baconian";
+import { hillEncryption } from "./components/ciphers/hill";
+import { vigenereEncryption, vigenereDecryption } from "./components/ciphers/vigenere";
+
+import img0 from "./utils/images/caesar.png";
+import img1 from "./utils/images/affine.png";
+import img2 from "./utils/images/rot13.png";
+import img3 from "./utils/images/atbash.png";
+import img4 from "./utils/images/baconian.png";
+import img5 from "./utils/images/hill.png";
+import img6 from "./utils/images/vigenere.png";
 
 const ciphersList = [
   "Caesar",
   "Affine",
-  "Monoalphabetic",
   "ROT13",
   "Atbash",
   "Baconian",
-  "Playfair",
-  "Hill",
-  "Homophobic Substitution",
-  "Polygram Substitution"
+  "3x3 Hill (3 char message)",
+  "Vigenere"
 ]
 
 const App = () => {
   const [isEncode, setIsEncode] = useState(true);
-  const [decryptedChars, setDecryptedChars] = useState(0);
   const [cipher, setCipher] = useState(-1);
   const [cipherArgs, setCipherArgs] = useState([]);
 
@@ -33,10 +43,36 @@ const App = () => {
   }
 
   const handleInput = (e) => {
+    if (!e.target.value) 
+      return setOutput("");
+
     switch (cipher) {
       case 0:
-        setOutput(isEncode ? caesarEncryption(e.target.value, parseInt(cipherArgs[0])) : caesarDecryption(e.target.value, cipherArgs[0]));
+        setOutput(isEncode ? caesarEncryption(e.target.value, Number(cipherArgs[0])) : caesarDecryption(e.target.value, Number(cipherArgs[0])));
         break;
+
+      case 1:
+        setOutput(isEncode ? affineEncryption(e.target.value, Number(cipherArgs[0]), Number(cipherArgs[1])) : affineDecryption(e.target.value, Number(cipherArgs[0]), Number(cipherArgs[1])));
+        break;
+
+      case 2:
+        setOutput(isEncode ? rot13Encryption(e.target.value) : rot13Decryption(e.target.value));
+        break;
+
+      case 3:
+        setOutput(isEncode ? atbashEncryption(e.target.value) : atbashDecryption(e.target.value));
+        break;
+
+      case 4:
+        setOutput(isEncode ? baconianEncryption(e.target.value.toUpperCase()) : baconianDecryption(e.target.value.toLowerCase()));
+        break;
+
+      case 5:
+        setOutput(isEncode ? hillEncryption(e.target.value, cipherArgs[0]) : "TO DO");
+        break;
+
+      case 6:
+        setOutput(isEncode ? vigenereEncryption(e.target.value, cipherArgs[0]) : vigenereDecryption(e.target.value, cipherArgs[0]));
     }
   }
 
@@ -53,6 +89,15 @@ const App = () => {
                 switch (i) {
                   case 0:
                     setCipherArgs([0]);
+                    break;
+                  case 1:
+                    setCipherArgs([3, 3]);
+                    break;
+                  case 5:
+                    setCipherArgs(["ASDFGHJKL"]);
+                    break;
+                  case 6:
+                    setCipherArgs(["key"]);
                     break;
                 }
               }}>
@@ -86,30 +131,40 @@ const App = () => {
                 <div className="cipher-options__divider"></div>
                 <div className="cipher-options__field">
                   <label htmlFor="cipher-options__field__shift">Shift</label>
-                  <input type="text" placeholder="2" value={cipherArgs[0]} onChange={(e) => setCipherArgs([e.target.value])} />
+                  <input id="cipher-options__field__shift" type="text" placeholder="2" value={cipherArgs[0]} onChange={(e) => setCipherArgs([e.target.value])} />
                 </div>
               </>
             )}
             {cipher === 1 && (
-              <div className="cipher-options__divider"></div>
-            )}
-            {cipher === 2 && (
-              <div className="cipher-options__divider"></div>
-            )}
-            {cipher === 3 && (
-              <div className="cipher-options__divider"></div>
-            )}
-            {cipher === 4 && (
-              <div className="cipher-options__divider"></div>
+              <>
+                <div className="cipher-options__divider"></div>
+                <div className="cipher-options__field">
+                  <label htmlFor="cipher-options__field__coprime1">Slope (coprime with 26)</label>
+                  <input id="cipher-options__field__coprime1" type="text" placeholder="3" value={cipherArgs[0]} onChange={(e) => setCipherArgs(pre => [e.target.value, pre[1]])} />
+                </div>
+                <div className="cipher-options__field">
+                  <label htmlFor="cipher-options__field__coprime2">Intercept</label>
+                  <input id="cipher-options__field__coprime2" type="text" placeholder="3" value={cipherArgs[1]} onChange={(e) => setCipherArgs(pre => [pre[0], e.target.value])} />
+                </div>
+              </>
             )}
             {cipher === 5 && (
-              <div className="cipher-options__divider"></div>
+              <>
+                <div className="cipher-options__divider"></div>
+                <div className="cipher-options__field">
+                  <label htmlFor="cipher-options__field__hill-key">Key</label>
+                  <input id="cipher-options__field__hill-key" type="text" placeholder="9 char ASCII key" value={cipherArgs[0]} onChange={(e) => setCipherArgs([e.target.value])} />
+                </div>
+              </>
             )}
             {cipher === 6 && (
-              <div className="cipher-options__divider"></div>
-            )}
-            {cipher === 7 && (
-              <div className="cipher-options__divider"></div>
+              <>
+                <div className="cipher-options__divider"></div>
+                <div className="cipher-options__field">
+                  <label htmlFor="cipher-options__field__vigenere-key">Key</label>
+                  <input id="cipher-options__field__vigenere-key" type="text" placeholder="key" value={cipherArgs[0]} onChange={(e) => setCipherArgs([e.target.value])} />
+                </div>
+              </>
             )}
           </article>
           <h1 className="cipher-algorithm__header">
@@ -117,7 +172,13 @@ const App = () => {
           </h1>
           { cipher !== -1 && (
             <article className="cipher-algorithm">
-              hi
+              { cipher === 0 && <img src={img0} /> }
+              { cipher === 1 && <img src={img1} /> }
+              { cipher === 2 && <img src={img2} /> }
+              { cipher === 3 && <img src={img3} /> }
+              { cipher === 4 && <img src={img4} /> }
+              { cipher === 5 && <img src={img5} /> }
+              { cipher === 6 && <img src={img6} /> }
             </article>
           )}
         </section>
@@ -127,7 +188,7 @@ const App = () => {
           <div className="arrow-down"></div>
           <textarea disabled className="cipherOutput" value={output} />
           <div className="decrypted-chars">
-            {isEncode ? "Encrypted" : "Decrypted"} <span className="green">{decryptedChars}</span> characters
+            {isEncode ? "Encrypted" : "Decrypted"} <span className="green">{output.length}</span> characters
           </div>
         </section>
       </main>

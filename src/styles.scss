@@ -123,6 +123,10 @@ main {
       border: 1px solid gray;
       margin-top: 10px;
 
+      img {
+        width: 100%;
+      }
+
       @media screen and (min-width: 850px) {
         display: block;
       }
@@ -194,11 +198,13 @@ main {
     padding: 20px 20px;
     z-index: 98;
     border-radius: 15px;
+    border: 2px solid gray;
 
     h1 {
       font-size: 1.6rem;
       margin-bottom: 20px;
       color: #20D368;
+      text-decoration: underline;
     }
 
     > div {
